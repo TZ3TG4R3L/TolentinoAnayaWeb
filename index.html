@@ -10,17 +10,39 @@
 </head>
 <body class="bg-[#FFFFFF] text-gray-900 overflow-x-hidden" style="font-family: 'Times New Roman', serif;">
 
-  <!-- Sección 1: Hero -->
+<!-- Sección 1: Hero -->
 <section class="h-screen flex items-center justify-center text-white relative bg-cover bg-center" 
-  style="background-image: url(ImgConta2.jpg);">
+  style="background-image: url('ImgConta2.jpg');">
 
   <!-- Overlay azul rey traslúcido -->
-  <div class="absolute inset-0 bg-[#002366] bg-opacity-70"></div>
+  <div class="absolute inset-0 bg-[#002366] bg-opacity-70 z-0"></div>
 
-  <!-- Contenido -->
-  <h1 class="relative text-4xl md:text-6xl font-bold" id="logo">TA Contadores</h1>
+  <!-- Logo central -->
+  <img src="logo-blanco.png" alt="TA Contadores Logo" id="logo" 
+       class="relative z-10 w-48 md:w-72">
+
+  <!-- Logo minimalista (oculto al inicio) -->
+  <img src="monograma-blanco.png" id="logoMini" 
+     class="fixed top-5 left-10 w-16 opacity-0 z-20">
 
 </section>
+
+
+<!-- Botón flotante de contacto -->
+<div class="fixed right-5 bottom-20 flex flex-col gap-4 z-50">
+  <!-- Botón de llamada -->
+  <a href="tel:+523313591852" 
+     class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-full shadow-lg flex items-center justify-center">
+    📞
+  </a>
+
+  <!-- Botón de WhatsApp -->
+  <a href="https://wa.me/523313591852?text=Hola%20quiero%20más%20información" target="_blank"
+     class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center">
+    💬
+  </a>
+</div>
+
 
 
 
@@ -78,6 +100,47 @@
       duration: 1
     });
   </script>
+
+ <script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // -------- Logo grande (centrado → esquina superior izquierda) --------
+  ScrollTrigger.create({
+    trigger: "body",
+    start: "top top",
+    end: "150 top",
+    scrub: true,
+    onUpdate: self => {
+      const progress = self.progress; // 0 = top, 1 = scroll máximo definido
+
+      // Calculamos la posición suavemente
+      const targetX = -window.innerWidth / 2 + 80;
+      const targetY = -window.innerHeight / 2 + 80;
+      const scale = 1 - 0.6 * progress; // escala de 1 → 0.4
+      const opacity = 1 - 1 * progress; // 1 → 0
+
+      gsap.set("#logo", {
+        x: targetX * progress,
+        y: targetY * progress,
+        scale: scale,
+        opacity: opacity
+      });
+
+      // Logo minimalista aparece suavemente solo cuando el grande ya casi terminó
+      if(progress > 0.6){
+        gsap.to("#logoMini", {opacity: 1, scale: 2, duration: 0.3});
+      } else {
+        gsap.to("#logoMini", {opacity: 0, scale: 0.8, duration: 0.3});
+      }
+    }
+  });
+
+  // -------- Restaurar logo grande al volver arriba --------
+  // ScrollTrigger con toggleActions="play reverse" ya maneja la reversión automática
+  // gracias al set dinámico en onUpdate
+</script>
+
+
 
 </body>
 </html>
